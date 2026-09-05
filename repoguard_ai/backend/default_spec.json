@@ -1,0 +1,10 @@
+{
+  "max_function_lines": 50,
+  "max_function_args": 5,
+  "require_docstrings": true,
+  "function_naming_pattern": "^[a-z_][a-z0-9_]*$",
+  "class_naming_pattern": "^[A-Z][A-Za-z0-9]*$",
+  "forbidden_functions": ["eval", "exec", "os.system"],
+  "forbidden_imports": ["pickle"],
+  "max_cyclomatic_complexity": 10
+}

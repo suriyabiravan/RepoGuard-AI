@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RepoGuard AI — Repository Analysis Console</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">RG</span>
+    <div class="brand-text">
+      <h1>RepoGuard AI</h1>
+      <p>Multi-agent repository analysis &amp; security assessment</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <label class="toggle">
+      <input type="checkbox" id="useLlm" />
+      <span>Use live LLM for semantic review</span>
+    </label>
+    <button id="specBtn" class="btn-ghost">Specification</button>
+  </div>
+</header>
+
+<main class="layout">
+
+  <section class="intake" id="intake">
+    <div class="intake-inner">
+      <h2>Analyze a repository</h2>
+      <p class="intake-copy">Drop Python files, pick a folder, or paste code. RepoGuard AI indexes the
+        repository, then runs static, semantic, and security agents in parallel before ranking every finding.</p>
+
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" multiple webkitdirectory style="display:none" />
+        <input type="file" id="fileInputFlat" multiple style="display:none" />
+        <p><strong>Drag files or a folder here</strong></p>
+        <p class="muted">or</p>
+        <div class="dropzone-buttons">
+          <button class="btn" id="pickFolderBtn">Choose folder</button>
+          <button class="btn" id="pickFilesBtn">Choose files</button>
+          <button class="btn-secondary" id="sampleBtn">Load sample repo</button>
+        </div>
+      </div>
+
+      <details class="paste-panel">
+        <summary>Or paste a single file</summary>
+        <input type="text" id="pasteFilename" placeholder="filename.py" value="snippet.py" />
+        <textarea id="pasteContent" rows="8" placeholder="Paste Python source here…"></textarea>
+        <button class="btn" id="pasteAddBtn">Add snippet</button>
+      </details>
+
+      <div class="file-chip-row" id="fileChipRow"></div>
+
+      <button class="btn-primary" id="runBtn" disabled>Run analysis</button>
+    </div>
+  </section>
+
+  <section class="pipeline" id="pipeline" hidden>
+    <ol class="pipeline-strip">
+      <li data-stage="ingestion"><span class="dot"></span>Ingestion</li>
+      <li data-stage="context_retrieval"><span class="dot"></span>Context Retrieval</li>
+      <li data-stage="parallel">
+        <span class="dot"></span>
+        <div class="parallel-group">
+          <span data-stage="static_analysis">Static Analysis</span>
+          <span data-stage="semantic_review">Semantic Review</span>
+          <span data-stage="security_assessment">Security Assessment</span>
+        </div>
+      </li>
+      <li data-stage="specification_checker"><span class="dot"></span>Spec Checker</li>
+      <li data-stage="orchestrator_dedup_rank"><span class="dot"></span>Orchestrator</li>
+    </ol>
+  </section>
+
+  <section class="results" id="results" hidden>
+    <div class="results-main">
+      <div class="results-toolbar">
+        <div class="filter-group" id="agentFilters"></div>
+        <input type="search" id="searchBox" placeholder="Search findings…" />
+      </div>
+      <div class="findings-list" id="findingsList"></div>
+    </div>
+
+    <aside class="results-rail">
+      <div class="metric-card">
+        <h3>Findings</h3>
+        <div class="metric-big" id="metricTotal">0</div>
+        <div class="metric-sub" id="metricCoverage">Coverage —</div>
+      </div>
+
+      <div class="metric-card">
+        <h3>By severity</h3>
+        <div class="sev-bars" id="sevBars"></div>
+      </div>
+
+      <div class="metric-card">
+        <h3>By agent</h3>
+        <div class="agent-bars" id="agentBars"></div>
+      </div>
+
+      <div class="metric-card">
+        <h3>Coordination</h3>
+        <div class="metric-sub" id="metricDedup">Deduplicated —</div>
+        <div class="timings" id="timingsList"></div>
+      </div>
+    </aside>
+  </section>
+
+</main>
+
+<div class="modal-backdrop" id="specModalBackdrop" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Project specification</h2>
+      <button class="btn-ghost" id="specCloseBtn">Close</button>
+    </div>
+    <p class="modal-copy">The Specification Conformance Checker validates findings against these rules.</p>
+    <textarea id="specTextarea" rows="14"></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="specResetBtn">Reset to default</button>
+      <button class="btn-primary" id="specSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="detailBackdrop" hidden>
+  <div class="modal" id="detailModal"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
